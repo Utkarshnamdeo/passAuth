@@ -1,5 +1,5 @@
 # passAuth
-Login authentication using node, express, mongodb, mongoose and basic html (no templates).
+Login authentication using NODE.JS, ExpressJS, MongoDB, Mongoose and basic html pages (no templates, no css too b'cos no one cares.).
 
 This is a simple node app primarily focusing on password authentication, session creation and and password hashing.
 
