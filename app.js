@@ -9,7 +9,7 @@ var session = require('client-sessions');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
-app.use(express.static(__dirname + '/views'));
+app.use(express.static(__dirname + '/'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -32,15 +32,15 @@ var data = new Schema({
 var User = mongoose.model('User', data);
 
 app.get('/', function (req, res) {
-	res.sendFile(path.join(__dirname + '/views/index.html'));
+	res.sendFile(path.join(__dirname + '/index.html'));
 });
 
 app.get('/login', function (req, res) {
-	res.sendFile(path.join(__dirname + '/views/login.html'));
+	res.sendFile(path.join(__dirname + '/login.html'));
 });
 
 app.get('/register', function (req, res) {
-	res.sendFile(path.join(__dirname + '/views/register.html'));
+	res.sendFile(path.join(__dirname + '/register.html'));
 });
 
 app.get('/dashboard', function (req, res) {
@@ -51,7 +51,7 @@ app.get('/dashboard', function (req, res) {
 				res.redirect('/login');
 			} else {
 				// res.locals.user = user;
-				res.sendFile(path.join(__dirname + '/views/dashboard.html'));
+				res.sendFile(path.join(__dirname + '/dashboard.html'));
 			}
 		});
 	} else{
