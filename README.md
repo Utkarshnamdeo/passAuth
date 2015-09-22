@@ -13,7 +13,7 @@ NOTE:
 
 Install all the dependencies from npm.
 
->npm instal express body-parser client-sessions mongoose 
+>npm instal express body-parser client-sessions mongoose bcrypt
 
 And run it by 
 >node app.js
