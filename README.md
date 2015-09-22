@@ -5,7 +5,11 @@ This is a simple node app primarily focusing on password authentication, session
 
 I have used express framework over node runtime environment.
 
-Moreover, mongoose is used to connect mongodb.
+MongoDB is used since it easy to understand and easily implementable.
+Mongoose is used over mongodb.
+
+BCRYPT algorithm is used for password hashing since it is better than all those crappy hashing algos out there.
+Virtually non vulnerable to brute force attacks, bit slower though.
 
 I have deployed simple HTML pages and not used any template engine just to keep it easily understandable.
 
@@ -15,5 +19,6 @@ Install all the dependencies from npm.
 
 >npm instal express body-parser client-sessions mongoose bcrypt
 
-And run it by 
+To run
+
 >node app.js
