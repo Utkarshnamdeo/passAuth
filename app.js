@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var app = express();
 var session = require('client-sessions');
+var bcrypt = require('bcryptjs');
 
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
@@ -65,11 +66,13 @@ app.get('/logout', function (req, res) {
 });
 
 app.post('/register', function (req, res) {
+	var salt = bcrypt.genSaltSync(10);
+	var hash = bcrypt.hashSync(req.body.password, salt);
 	var user = new User({
 		firstname: req.body.firstname,
 		lastname: req.body.lastname,
 		email: req.body.email,
-		password: req.body.password
+		password: hash
 	});
 
 	user.save(function (err) {
@@ -90,7 +93,7 @@ app.post('/login', function (req, res) {
 		}
 
 		else {
-			if(req.body.password === user.password) {
+			if(bcrypt.compareSync(req.body.password, user.password)) {
 				req.session.user = user.email;
 				res.redirect('/dashboard');
 			}
