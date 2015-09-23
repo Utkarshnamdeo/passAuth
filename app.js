@@ -14,14 +14,18 @@ var ObjectId = Schema.ObjectId;
 
 // to handle static files i.e attached javascripts or css
 app.use(express.static(__dirname + '/'));
-
+app.set('view engine', 'hbs');
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //using sessions to set cokkie and remember current user
 app.use(session({
 	cookieName: 'session',
-	secret: 'some_random_string',
-	duration: 30 * 60 * 1000
+	secret: 'utkarsh',
+	duration: 30 * 60 * 1000,
+	activeDuration: 5 * 60 * 1000, // not necessary
+	httpOnly: true, // dont let malicious javascript to run 
+	secure: true, // use only cookies
+	ephermal: true // delete cookies on browser close 
 }));
 
 //connection mongoose to sss collection
@@ -37,28 +41,37 @@ var data = new Schema({
 
 var User = mongoose.model('User', data);
 
-//-----------------// routes to handle get and post request//---------------------------
+//---------------------routes to handle get and post request---------------------------
 app.get('/', function (req, res) {
-	res.sendFile(path.join(__dirname + '/index.html'));
+	res.render('index', { title: 'Express', logo: 'SessionAuth' });
 });
 
 app.get('/login', function (req, res) {
-	res.sendFile(path.join(__dirname + '/login.html'));
+	res.render('login', { title: 'Express', logo: 'SessionAuth' })
 });
 
 app.get('/register', function (req, res) {
-	res.sendFile(path.join(__dirname + '/register.html'));
+	res.render('register', { title: 'Express', logo: 'SessionAuth' });
 });
 
 app.get('/dashboard', function (req, res) {
 	if(req.session && req.session.user) {
 		User.findOne({ emil: req.session.user.email }, function (err, user) {
-			if(!user) {
-				req.session.reset();
-				res.redirect('/login');
-			} else {
-				// res.locals.user = user;
-				res.sendFile(path.join(__dirname + '/dashboard.html'));
+			if(err) {
+					res.render('login', { error: "Can't fetch Dashboard."});
+			}
+			else { 
+
+				if(!user) {
+					req.session.reset();
+					res.redirect('/login');
+				}	
+				else {
+					res.locals.user = req.user;
+				User.findOne({ emil: req.session.user.email }, function (err, user) {
+					res.render('dashboard', { title: 'Express', logo: 'SessionAuth', name: user.firstname });	
+				});
+				}
 			}
 		});
 	} else{
@@ -84,7 +97,7 @@ app.post('/register', function (req, res) {
 
 	user.save(function (err) {
 		if(err) {
-			res.send("Email Already Exist try using another email address.");
+			res.render('login', { error: "something went wrong" });
 		}
 
 		else {
@@ -97,7 +110,7 @@ app.post('/register', function (req, res) {
 app.post('/login', function (req, res) {
 	User.findOne({ email: req.body.email }, function (err, user) {
 		if(!user) {
-			res.send('Not an existing user.');
+			res.render('login', { error: "Not a valid user." });
 		}
 
 		else {
@@ -107,7 +120,7 @@ app.post('/login', function (req, res) {
 			} 
 
 		else {
-			res.send("Invalid email/password");
+			res.render('login', { error: "Email/password didn't match."});
 			}
 		}
 	});
